@@ -36,7 +36,9 @@ src/images/                 ảnh Unsplash miễn phí TẠM — thay bằng ả
 src/components/FloatingContact.astro   thanh Gọi/Zalo cố định
 data/redirects.json         URL cũ của domain → URL mới (astro.config đọc)
 tools/wayback-urls.cjs      lấy URL cũ từ archive.org
-bot/                        bot Telegram — CHƯA dùng, làm sau khi web ổn
+bot/bot.cjs                 bot Telegram đăng bài (Telegraf) — xem mục "Bot đăng bài"
+bot/ai.cjs                  prompt + gọi Gemini (nhìn ảnh + đọc mô tả → JSON bài viết)
+bot/media.cjs               ảnh: xóa EXIF/GPS, ≤1600px · video: ffmpeg nén 720p + ảnh bìa
 ```
 Trang: / · /dich-vu/ · /may-in-cu/ (+4 dòng máy) · /thu-mua-may-in/ · /bang-gia/ · /gioi-thieu/ · /lien-he/ · /blog/ · 404
 
@@ -54,6 +56,18 @@ youtube: ""          # id video
 draft: false
 ```
 Quy tắc nội dung: giọng kỹ thuật viên thật, không bịa số liệu/đánh giá, không chép từ web HT Group khác.
+
+## Bot đăng bài (Telegram + Gemini)
+Luồng: nhân viên gửi ảnh/video + mô tả kỹ thuật trong **nhóm nhân viên** → bot nén/làm sạch media → Gemini
+(mặc định gemini-2.5-flash, cùng loại bot kỹ thuật) viết bài → gửi **riêng cho quản lý** kèm nút
+✅ Đăng / ✏️ Sửa (nhắn yêu cầu, AI sửa) / 🔄 Viết lại / ❌ Hủy → Đăng = ghi `src/content/blog/<slug>/`,
+video vào `public/video/<slug>/`, **build thử**, git push → GitHub Actions deploy.
+- Cấu hình `.env` (mẫu `.env.example`): TELEGRAM_BOT_TOKEN, GEMINI_API_KEY, STAFF_GROUP_ID, ADMIN_IDS.
+- Chạy: `START-BOT.bat` (tự khởi động lại, log ở `logs/bot.log`). ffmpeg cài qua winget (Gyan.FFmpeg).
+- Bot phải là **admin nhóm** (hoặc tắt privacy ở BotFather) mới đọc được tin nhắn thường trong nhóm.
+- Lệnh: /id · /huy · /ds (quản lý) · /an <slug> (quản lý, ẩn bài bằng `draft: true`).
+- Nháp lưu ở `bot/drafts/` (không lên git) → tắt bot không mất. Giới hạn: file Telegram ≤ 20MB.
+- Prompt cấm bịa giá/tên khách/số liệu; thiếu thông tin → AI hỏi lại nhân viên (needMore).
 
 ## 9. Deploy
 - Repo: `mucinhungthinh-maker/muabanmayin-net` (tài khoản GitHub mucinhungthinh-maker, email vivianha2000), public

@@ -16,6 +16,7 @@ export type PageKind =
       image: string;
       datePublished: Date;
       dateModified?: Date;
+      videos?: { src: string; poster: string; title: string }[];
     }
   | { type: 'Product'; image: string };
 
@@ -109,6 +110,16 @@ export function buildPageMetadata(input: PageMetadataInput): PageMetadata {
         mainEntityOfPage: canonical,
         inLanguage: info.inLanguage,
       });
+      for (const v of kind.videos ?? []) {
+        graph.push({
+          '@type': 'VideoObject',
+          name: v.title,
+          description,
+          thumbnailUrl: absoluteUrl(v.poster),
+          contentUrl: absoluteUrl(v.src),
+          uploadDate: kind.datePublished.toISOString(),
+        });
+      }
       break;
     case 'Product':
       graph.push({

@@ -45,6 +45,11 @@ const blogCollection = defineCollection({
       cardImageAlt: z.string(),
       readTime: z.number().optional(),
       youtube: z.string().optional(),
+      // video tự host (bot nén bằng ffmpeg, để ở public/video/<slug>/)
+      videos: z
+        .array(z.object({ src: z.string(), poster: z.string(), title: z.string() }))
+        .default([]),
+      author: z.string().optional(), // tên nhân viên gửi bài (nội bộ, không hiển thị)
       draft: z.boolean().default(false),
     }),
 });

@@ -41,6 +41,7 @@ const crumbs = [
     image: new URL(d.cardImage.src, site.url).href,
     datePublished: d.pubDate,
     dateModified: d.updatedDate,
+    videos: d.videos,
   }}
   breadcrumbs={crumbs}
 >
@@ -65,6 +66,19 @@ const crumbs = [
     <article class="prose prose-lg prose-neutral dark:prose-invert mb-8 max-w-none text-pretty prose-a:text-orange-500 prose-img:rounded-xl">
       <Content />
     </article>
+    {d.videos.map(v => (
+      <figure class="mb-8">
+        <video
+          class="w-full rounded-xl bg-neutral-900"
+          controls
+          preload="none"
+          playsinline
+          poster={v.poster}
+          src={v.src}
+        ></video>
+        <figcaption class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{v.title}</figcaption>
+      </figure>
+    ))}
     {d.youtube && (
       <div class="mb-8 aspect-video overflow-hidden rounded-xl">
         <iframe

@@ -5,3 +5,6 @@ dist/
 bot/state.json
 logs/
 *.log
+
+bot/drafts/
+bot/state.json
