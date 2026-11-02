@@ -457,7 +457,11 @@ function buildMarkdown(d, slug) {
 async function gitPublish(message) {
   if (!AUTO_PUSH) return;
   // chỉ đưa vào git những thư mục đang có (bài không có video thì chưa có public/video)
-  const paths = ['src/content/blog', 'public/video'].filter(p => fs.existsSync(path.join(ROOT, p)));
+  // (thư mục trống git không biết → báo lỗi pathspec, nên bỏ qua cả thư mục rỗng)
+  const paths = ['src/content/blog', 'public/video'].filter(p => {
+    const full = path.join(ROOT, p);
+    return fs.existsSync(full) && fs.readdirSync(full).length > 0;
+  });
   await run('git', ['add', '-A', ...paths]);
   const st = await run('git', ['status', '--porcelain', ...paths]);
   if (!st.trim()) return;
