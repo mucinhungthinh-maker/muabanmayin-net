@@ -456,10 +456,12 @@ function buildMarkdown(d, slug) {
 
 async function gitPublish(message) {
   if (!AUTO_PUSH) return;
-  await run('git', ['add', '-A', 'src/content/blog', 'public/video']);
-  const st = await run('git', ['status', '--porcelain', 'src/content/blog', 'public/video']);
+  // chỉ đưa vào git những thư mục đang có (bài không có video thì chưa có public/video)
+  const paths = ['src/content/blog', 'public/video'].filter(p => fs.existsSync(path.join(ROOT, p)));
+  await run('git', ['add', '-A', ...paths]);
+  const st = await run('git', ['status', '--porcelain', ...paths]);
   if (!st.trim()) return;
-  await run('git', ['commit', '-m', message, '--', 'src/content/blog', 'public/video']);
+  await run('git', ['commit', '-m', message, '--', ...paths]);
   await run('git', ['push']);
 }
 
