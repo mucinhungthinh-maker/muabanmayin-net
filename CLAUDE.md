@@ -11,9 +11,9 @@
 - **Hotline/Zalo:** 0931 867 301
 - **Địa chỉ:** Đường Tô Ký, Quận 12 — **TODO số nhà**
 - **Giờ làm việc / Google Maps / YouTube / TikTok / Facebook:** TODO
-- **Màu:** #0B5ED7 (chính) · #F59E0B (nhấn — chữ trên nền nhấn dùng màu tối để đủ tương phản)
+- **Màu:** theo ScrewFast — vàng #FACC15 (nhấn) + xám đậm neutral; chữ trên nền vàng dùng màu tối
 - **Chủ quản:** HT Group
-→ Tất cả nằm ở `src/data/site.ts`. Không viết cứng ở nơi khác.
+→ Tất cả nằm ở `src/data_files/site.ts`. Không viết cứng ở nơi khác.
 
 ## 2. Từ khóa
 - Chính: sửa máy in quận 12, máy in cũ quận 12, thu mua máy in cũ
@@ -22,20 +22,23 @@
   Web này chỉ nhắm **Quận 12 / Tô Ký** (địa chỉ thật của chi nhánh) — KHÔNG làm trang landing cho quận khác.
 
 ## 3–4. Công nghệ & cấu trúc
-Astro 7 (static) + Tailwind 4 (`@tailwindcss/vite`, typography) + `@astrojs/sitemap`.
+Astro 7 (static) + Tailwind 4 + giao diện **ScrewFast** (MIT, github.com/mearashadowfax/ScrewFast — giấy phép ở LICENSE-screwfast).
+Đã bỏ khỏi theme: đa ngôn ngữ, Starlight docs, đăng nhập, form (không có máy chủ), đánh giá/số liệu/khách hàng mẫu (giả).
+Miễn phí 100%, KHÔNG giỏ hàng/thanh toán — máy in cũ chỉ trưng bày, khách Gọi/Zalo.
 ```
-src/data/site.ts        NAP, màu, mạng xã hội (1 nguồn duy nhất)
-src/data/content.ts     dịch vụ, bảng giá (TODO giá thật), quy trình, FAQ
-src/lib/schema.ts       FAQPage, BreadcrumbList   ·  LocalBusiness ở BaseLayout
-src/components/         Header Footer Hero ServiceCard PriceTable FAQ ContactBlock FloatingContact Breadcrumb CTA PostCard YouTube
-src/layouts/            BaseLayout (SEO head + schema), PostLayout (Article + Breadcrumb + bài liên quan + link dịch vụ)
-src/pages/              index dich-vu may-in-cu thu-mua-may-in bang-gia gioi-thieu lien-he blog/ 404
-src/content/blog/<slug>/index.md   bài viết (+ ảnh cùng thư mục, dùng ./anh.jpg → Astro tự xuất WebP)
-data/redirects.json     URL cũ của domain → URL mới (astro.config đọc, sinh trang chuyển hướng)
-tools/wayback-urls.cjs  lấy URL cũ từ archive.org → data/redirects.suggest.json
-tools/og.mjs            sinh public/og-default.png (tạm)
-bot/                    bot Telegram — CHƯA dùng, sẽ viết lại sau khi web chạy ổn (ghi .md vào src/content/blog)
+src/data_files/site.ts      NAP, giờ, Maps, mạng xã hội (1 nguồn duy nhất)
+src/data_files/content.ts   dịch vụ, lý do chọn, quy trình, bảng giá (TODO giá thật), FAQ, ảnh dùng chung
+src/copy/vi.ts              chữ giao diện (menu, nút)
+src/utils/metadata.ts       <head> + JSON-LD: LocalBusiness mọi trang, Article/Product/FAQPage/BreadcrumbList
+src/content/blog/<slug>/index.md   bài viết (cardImage bắt buộc)
+src/content/products/<slug>.md     DÒNG máy in cũ (không phải 1 máy cụ thể) → /may-in-cu/<slug>/
+src/images/                 ảnh Unsplash miễn phí TẠM — thay bằng ảnh thật chi nhánh
+src/components/FloatingContact.astro   thanh Gọi/Zalo cố định
+data/redirects.json         URL cũ của domain → URL mới (astro.config đọc)
+tools/wayback-urls.cjs      lấy URL cũ từ archive.org
+bot/                        bot Telegram — CHƯA dùng, làm sau khi web ổn
 ```
+Trang: / · /dich-vu/ · /may-in-cu/ (+4 dòng máy) · /thu-mua-may-in/ · /bang-gia/ · /gioi-thieu/ · /lien-he/ · /blog/ · 404
 
 ## 7. Frontmatter bài viết
 ```yaml
@@ -45,8 +48,8 @@ pubDate: 2026-11-02
 updatedDate:
 category: sua-may-in # sua-may-in | may-in-cu | thu-mua-may-in → quyết định link về trang dịch vụ nào
 tags: []
-cover: ./anh-bia.jpg
-coverAlt: ""
+cardImage: ./anh-bia.jpg      # bắt buộc
+cardImageAlt: ""
 youtube: ""          # id video
 draft: false
 ```
@@ -71,6 +74,7 @@ về trang mới **cùng chủ đề** (không dồn hết về trang chủ).
 - [ ] Số nhà, giờ làm việc, Google Maps (link + embed), mạng xã hội → `site.ts`
 - [ ] Giá thật → `content.ts` (đang "Liên hệ")
 - [ ] Xác nhận các câu cam kết trong `content.ts` (bảo hành, trả linh kiện cũ, đến tận nơi)
-- [ ] Ảnh thật chi nhánh/kho máy, logo, og-default thật
+- [ ] Ảnh thật chi nhánh/kho máy thay ảnh Unsplash trong src/images, logo thật (BrandLogo.astro)
+- [ ] Kiểm lại danh sách model trong src/content/products ("Model thường có")
 - [ ] Trỏ DNS, Enforce HTTPS, Search Console
 - [ ] Danh sách URL cũ (Wayback) → redirects

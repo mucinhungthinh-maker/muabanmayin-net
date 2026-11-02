@@ -1,33 +1,56 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
-import ContactBlock from '../components/ContactBlock.astro';
-import CTA from '../components/CTA.astro';
-import { site } from '../data/site';
-import { breadcrumbSchema } from '../lib/schema';
+import MainLayout from '@/layouts/MainLayout.astro';
+import Breadcrumb from '@components/ui/blocks/Breadcrumb.astro';
+import MainSection from '@components/ui/blocks/MainSection.astro';
+import AlternatingSections, { type Article } from '@components/ui/blocks/AlternatingSections.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import { images } from '@data/content';
+import { site } from '@data/site';
 
-const crumbs = [{ name: 'Giới thiệu', href: '/gioi-thieu/' }];
+// TODO: anh bổ sung số năm kinh nghiệm, số kỹ thuật viên, ảnh thật cửa hàng/kho máy.
+// Không đưa số liệu chưa kiểm chứng lên web.
+const crumbs = [{ name: 'Giới thiệu', path: '/gioi-thieu/' }];
+
+const articles: Article[] = [
+  {
+    title: 'Đội kỹ thuật',
+    subTitle:
+      'Kỹ thuật viên trực tiếp nhận máy, kiểm tra và báo giá tại chỗ. Các ca sửa thực tế được ghi lại bằng hình ảnh, video và đăng ở mục Kinh nghiệm để khách tham khảo trước khi mang máy đến.',
+    images: [
+      { src: images.bamNut, alt: 'Kiểm tra bảng điều khiển máy in' },
+      { src: images.suaMach, alt: 'Sửa bo mạch bằng dụng cụ chuyên dụng' },
+    ],
+    cta: { title: 'Xem ca sửa thực tế', url: '/blog/' },
+  },
+  {
+    title: 'Kho máy in cũ',
+    subTitle:
+      'Máy in cũ được kiểm tra, vệ sinh và in thử trước khi bán. Hàng về theo đợt nên mẫu mã thay đổi — gọi trước để biết máy đang có.',
+    images: [{ src: images.mayInQuay, alt: 'Máy in laser màu đa năng đã kiểm tra' }],
+    cta: { title: 'Xem máy in cũ', url: '/may-in-cu/' },
+  },
+  {
+    title: 'Cách làm việc',
+    subTitle:
+      'Báo giá trước khi làm. Máy hỏng nặng, chi phí sửa không hợp lý, cửa hàng nói rõ để khách chọn sửa, đổi sang máy cũ khác hoặc bán lại máy.',
+    images: [
+      { src: images.mayInSanGo, alt: 'Máy in phun đa năng sau khi bảo dưỡng' },
+      { src: images.mayInCuaSo, alt: 'Máy in laser HP sau khi bảo dưỡng' },
+    ],
+  },
+];
 ---
 
-<BaseLayout
+<MainLayout
   title="Giới thiệu chi nhánh máy in Tô Ký – HT Group"
   description="Chi nhánh Tô Ký, Quận 12 của HT Group: sửa máy in, bán máy in cũ, thu mua máy in. Đội kỹ thuật, kho máy và cách làm việc."
-  schema={[breadcrumbSchema(crumbs)]}
+  breadcrumbs={crumbs}
 >
   <Breadcrumb items={crumbs} />
-  <div class="mx-auto max-w-3xl px-4 py-6">
-    <h1 class="text-3xl font-extrabold md:text-4xl">Giới thiệu {site.brand}</h1>
-    <!-- TODO: anh bổ sung số năm kinh nghiệm, số kỹ thuật viên, hình cửa hàng/kho máy thật. Không đưa số liệu chưa kiểm chứng. -->
-    <div class="prose prose-slate prose-lg mt-6 max-w-none">
-      <p>{site.brand} là chi nhánh của {site.owner} trên đường Tô Ký, Quận 12, chuyên ba việc: sửa máy in, bán máy in cũ và thu mua máy in cũ.</p>
-      <h2>Đội kỹ thuật</h2>
-      <p>Kỹ thuật viên trực tiếp nhận máy, kiểm tra và báo giá tại chỗ. Các ca sửa thực tế được ghi lại bằng hình ảnh, video và đăng ở mục <a href="/blog/">Kinh nghiệm</a>.</p>
-      <h2>Kho máy in cũ</h2>
-      <p>Máy in cũ được kiểm tra, vệ sinh và in thử trước khi bán. Xem các máy đang có ở trang <a href="/may-in-cu/">máy in cũ</a>.</p>
-      <h2>Cách làm việc</h2>
-      <p>Báo giá trước khi làm. Máy hỏng nặng, chi phí sửa không hợp lý, cửa hàng sẽ nói rõ để khách chọn sửa, đổi máy hoặc <a href="/thu-mua-may-in/">bán lại máy</a>.</p>
-    </div>
-    <div class="mt-8"><ContactBlock /></div>
-  </div>
-  <CTA />
-</BaseLayout>
+  <MainSection
+    title={`Giới thiệu ${site.brand}`}
+    subTitle={`${site.brand} là chi nhánh của ${site.owner} trên đường Tô Ký, Quận 12, chuyên ba việc: sửa máy in, bán máy in cũ và thu mua máy in cũ.`}
+  />
+  <AlternatingSections articles={articles} />
+  <CTASection />
+</MainLayout>

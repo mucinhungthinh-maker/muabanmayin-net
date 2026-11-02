@@ -1,0 +1,32 @@
+---
+import { prices } from '@data/content';
+interface Props {
+  limit?: number;
+}
+const { limit } = Astro.props;
+const rows = limit ? prices.slice(0, limit) : prices;
+---
+
+<div class="overflow-hidden rounded-xl border border-neutral-300 dark:border-neutral-700">
+  <table class="min-w-full divide-y divide-neutral-300 dark:divide-neutral-700">
+    <thead class="bg-neutral-100 dark:bg-white/[.05]">
+      <tr>
+        <th scope="col" class="px-4 py-3 text-start text-xs font-bold text-neutral-600 uppercase sm:px-6 dark:text-neutral-400">Hạng mục</th>
+        <th scope="col" class="px-4 py-3 text-start text-xs font-bold whitespace-nowrap text-neutral-600 uppercase sm:px-6 dark:text-neutral-400">Giá tham khảo</th>
+        <th scope="col" class="hidden px-6 py-3 text-start text-xs font-bold text-neutral-600 uppercase sm:table-cell dark:text-neutral-400">Ghi chú</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-neutral-300 dark:divide-neutral-700">
+      {rows.map(r => (
+        <tr>
+          <td class="px-4 py-4 text-neutral-800 sm:px-6 dark:text-neutral-200">{r.item}</td>
+          <td class="px-4 py-4 font-bold whitespace-nowrap text-orange-500 sm:px-6 dark:text-orange-300">{r.price}</td>
+          <td class="hidden px-6 py-4 text-sm text-neutral-600 sm:table-cell dark:text-neutral-400">{r.note}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+  Giá tham khảo, báo giá chính xác sau khi kiểm tra máy.
+</p>

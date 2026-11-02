@@ -4,6 +4,8 @@ description: "Máy in cũ, máy in hỏng được định giá theo model, tìn
 pubDate: 2026-10-31
 category: "thu-mua-may-in"
 tags: ["thu mua máy in", "bán máy in cũ"]
+cardImage: "../../../images/may-in-cua-so.jpg"
+cardImageAlt: "Máy in laser HP cũ chuẩn bị bán lại"
 ---
 
 Khi văn phòng đổi máy mới hoặc máy in hỏng không muốn sửa, bán lại là cách thu hồi một phần chi phí. Giá thu mua mỗi máy khác nhau khá nhiều — hiểu các yếu tố dưới đây sẽ giúp anh chị biết vì sao.

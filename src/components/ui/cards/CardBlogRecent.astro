@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import PrimaryCTA from '@components/ui/buttons/PrimaryCTA.astro';
+import { pathFor, readTimeOf } from '@utils/content';
+import { formatDate } from '@utils/utils';
+
+interface Props {
+  blogEntry: CollectionEntry<'blog'>;
+}
+const { blogEntry } = Astro.props;
+const { copy: t } = Astro.locals;
+---
+
+<div class="grid gap-8 sm:grid-cols-2 sm:items-center">
+  <div class="sm:order-2">
+    <div class="relative rounded-lg pt-[50%] sm:pt-[100%]">
+      <Image
+        class="absolute start-0 top-0 size-full rounded-xl object-cover"
+        src={blogEntry.data.cardImage}
+        alt={blogEntry.data.cardImageAlt}
+        width={900}
+        draggable={'false'}
+        loading="lazy"
+      />
+    </div>
+  </div>
+  <div class="sm:order-1">
+    <p class="text-sm font-bold text-orange-400">Bài mới nhất</p>
+    <h2 class="mt-2 text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-3xl lg:text-4xl lg:leading-tight dark:text-neutral-200">
+      <a
+        class="ring-zinc-500 outline-hidden transition duration-300 hover:text-orange-400 focus-visible:ring-3 dark:ring-zinc-200"
+        href={pathFor(blogEntry)}
+      >
+        {blogEntry.data.title}
+      </a>
+    </h2>
+    <p class="mt-4 text-pretty text-neutral-600 dark:text-neutral-400">{blogEntry.data.description}</p>
+    <p class="mt-4 text-sm text-neutral-500">
+      {formatDate(blogEntry.data.pubDate)} · {t.blog.minRead(readTimeOf(blogEntry))}
+    </p>
+    <div class="mt-5">
+      <PrimaryCTA url={pathFor(blogEntry)} title={t.blog.readMore} data-astro-prefetch />
+    </div>
+  </div>
+</div>

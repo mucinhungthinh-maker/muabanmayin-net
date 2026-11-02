@@ -1,0 +1,31 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Breadcrumb from '@components/ui/blocks/Breadcrumb.astro';
+import ProductDetail from '@components/sections/products/ProductDetail.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import { getProducts, pathFor, slugOf } from '@utils/content';
+import { site } from '@data/site';
+
+export async function getStaticPaths() {
+  const products = await getProducts();
+  return products.map(entry => ({ params: { id: slugOf(entry) }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const crumbs = [
+  { name: 'Máy in cũ', path: '/may-in-cu/' },
+  { name: entry.data.cardTitle, path: pathFor(entry) },
+];
+---
+
+<MainLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  ogImage={entry.data.image}
+  kind={{ type: 'Product', image: new URL(entry.data.image.src, site.url).href }}
+  breadcrumbs={crumbs}
+>
+  <Breadcrumb items={crumbs} />
+  <ProductDetail product={entry} />
+  <CTASection title="Muốn xem máy trực tiếp?" subTitle="Gọi trước để cửa hàng chuẩn bị máy, anh chị đến in thử tại chi nhánh Tô Ký." />
+</MainLayout>

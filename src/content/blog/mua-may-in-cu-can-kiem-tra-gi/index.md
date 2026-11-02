@@ -4,6 +4,8 @@ description: "Checklist kiểm tra máy in cũ trước khi mua: số trang đã
 pubDate: 2026-11-01
 category: "may-in-cu"
 tags: ["máy in cũ", "kinh nghiệm mua máy"]
+cardImage: "../../../images/may-in-quay.jpg"
+cardImageAlt: "Máy in laser đa năng cũ cần kiểm tra trước khi mua"
 ---
 
 Một máy in laser cũ còn tốt có thể dùng thêm nhiều năm, nhưng máy đã "kiệt" linh kiện thì mua về sẽ tốn thêm tiền sửa. Dưới đây là những điểm kỹ thuật viên luôn kiểm tra trước khi nhận hay bán một máy cũ.

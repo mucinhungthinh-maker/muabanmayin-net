@@ -1,22 +1,44 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumb from '../../components/Breadcrumb.astro';
-import PostCard from '../../components/PostCard.astro';
-import { breadcrumbSchema } from '../../lib/schema';
-import { getPosts } from '../../lib/posts';
+import MainLayout from '@/layouts/MainLayout.astro';
+import Breadcrumb from '@components/ui/blocks/Breadcrumb.astro';
+import CardBlog from '@components/ui/cards/CardBlog.astro';
+import CardBlogRecent from '@components/ui/cards/CardBlogRecent.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import { getPosts } from '@utils/content';
 
-const posts = await getPosts();
-const crumbs = [{ name: 'Kinh nghiệm', href: '/blog/' }];
+const [mostRecent, ...others] = await getPosts();
+const crumbs = [{ name: 'Kinh nghiệm', path: '/blog/' }];
 ---
 
-<BaseLayout
-  title="Kinh nghiệm sửa & chọn mua máy in cũ"
+<MainLayout
+  title="Kinh nghiệm sửa máy in & mua máy in cũ"
   description="Ca sửa máy in thực tế, kinh nghiệm chọn mua máy in cũ, cách định giá khi bán máy in cũ — từ kỹ thuật viên chi nhánh Tô Ký, Quận 12."
-  schema={[breadcrumbSchema(crumbs)]}
+  breadcrumbs={crumbs}
 >
   <Breadcrumb items={crumbs} />
-  <div class="mx-auto max-w-6xl px-4 py-6">
-    <h1 class="text-3xl font-extrabold md:text-4xl">Kinh nghiệm sửa máy in & mua bán máy in cũ</h1>
-    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
-  </div>
-</BaseLayout>
+  <section class="mx-auto max-w-[85rem] space-y-8 px-4 pt-10 sm:px-6 lg:px-8 2xl:max-w-full">
+    <div class="mx-auto max-w-3xl text-left sm:text-center">
+      <h1 class="block text-4xl font-bold tracking-tight text-balance text-neutral-800 md:text-5xl dark:text-neutral-200">
+        Kinh nghiệm sửa máy in & mua bán máy in cũ
+      </h1>
+      <p class="mt-4 text-lg text-pretty text-neutral-600 dark:text-neutral-400">
+        Ca sửa thực tế có hình ảnh, video từ kỹ thuật viên; kinh nghiệm chọn máy in cũ và bán lại máy cũ.
+      </p>
+    </div>
+  </section>
+
+  {mostRecent ? (
+    <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+      <CardBlogRecent blogEntry={mostRecent} />
+    </section>
+  ) : (
+    <p class="py-10 text-center text-neutral-600 dark:text-neutral-400">Bài viết đang được cập nhật.</p>
+  )}
+
+  {others.length > 0 && (
+    <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+      <div class="grid gap-6 lg:grid-cols-2">{others.map(p => <CardBlog blogEntry={p} />)}</div>
+    </section>
+  )}
+  <CTASection />
+</MainLayout>

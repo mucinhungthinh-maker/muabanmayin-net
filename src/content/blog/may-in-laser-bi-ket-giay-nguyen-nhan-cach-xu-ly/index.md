@@ -4,6 +4,8 @@ description: "Máy in laser kẹt giấy ở khay, giữa máy hay cửa ra gi�
 pubDate: 2026-11-02
 category: "sua-may-in"
 tags: ["kẹt giấy", "máy in laser", "sửa máy in"]
+cardImage: "../../../images/bam-nut.jpg"
+cardImageAlt: "Kiểm tra máy in laser văn phòng bị kẹt giấy"
 ---
 
 Kẹt giấy là lỗi gặp nhiều nhất ở máy in laser văn phòng. Phần lớn trường hợp tự xử lý được nếu làm đúng cách; nhưng nếu máy kẹt lặp đi lặp lại thì thường là linh kiện đã mòn.

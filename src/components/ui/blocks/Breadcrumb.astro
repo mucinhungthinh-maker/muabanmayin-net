@@ -1,0 +1,23 @@
+---
+import type { Crumb } from '@utils/metadata';
+// items không gồm "Trang chủ" (tự thêm). Mục cuối là trang hiện tại.
+interface Props {
+  items: Crumb[];
+}
+const all = [{ name: 'Trang chủ', path: '/' }, ...Astro.props.items];
+---
+
+<nav aria-label="Breadcrumb" class="mx-auto max-w-[85rem] px-4 pt-8 text-sm text-neutral-600 sm:px-6 lg:px-8 2xl:max-w-full dark:text-neutral-400">
+  <ol class="flex flex-wrap items-center gap-1.5">
+    {all.map((c, i) => (
+      <li class="flex items-center gap-1.5">
+        {i > 0 && <span aria-hidden="true" class="text-neutral-400">/</span>}
+        {i < all.length - 1 ? (
+          <a href={c.path} class="hover:text-orange-400">{c.name}</a>
+        ) : (
+          <span aria-current="page" class="font-medium text-neutral-800 dark:text-neutral-200">{c.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

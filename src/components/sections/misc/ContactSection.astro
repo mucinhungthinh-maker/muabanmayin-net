@@ -1,0 +1,93 @@
+---
+// Web tĩnh không có máy chủ nhận form → liên hệ trực tiếp qua Gọi / Zalo / đến cửa hàng.
+import ContactIconBlock from '@components/ui/blocks/ContactIconBlock.astro';
+import PrimaryCTA from '@components/ui/buttons/PrimaryCTA.astro';
+import SecondaryCTA from '@components/ui/buttons/SecondaryCTA.astro';
+import Icon from '@components/ui/icons/Icon.astro';
+import { site, fullAddress } from '@data/site';
+
+interface Props {
+  title: string;
+  subTitle: string;
+}
+const { title, subTitle } = Astro.props;
+const { copy: t } = Astro.locals;
+const blockIconClass = 'mt-1.5 h-6 w-6 shrink-0 text-neutral-600 dark:text-neutral-400';
+---
+
+<section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+  <div class="mx-auto max-w-2xl lg:max-w-5xl">
+    <div class="text-center">
+      <h1 class="text-2xl font-bold tracking-tight text-balance text-neutral-800 md:text-4xl md:leading-tight dark:text-neutral-200">
+        {title}
+      </h1>
+      <p class="mt-1 text-pretty text-neutral-600 dark:text-neutral-400">{subTitle}</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <PrimaryCTA title={`${t.contact.call} ${site.hotline}`} url={`tel:${site.hotlineTel}`} variant="yellow" noArrow />
+        <SecondaryCTA title={t.contact.zalo} url={site.zalo} />
+      </div>
+    </div>
+
+    <div class="mt-12 grid items-start gap-6 lg:grid-cols-2 lg:gap-16">
+      <div class="divide-y divide-neutral-300 dark:divide-neutral-700">
+        <ContactIconBlock
+          heading="Hotline / Zalo"
+          content="Gọi hoặc nhắn Zalo, gửi kèm hình máy và lỗi đang gặp để được tư vấn nhanh."
+          isLinkVisible={true}
+          linkTitle={site.hotline}
+          linkURL={`tel:${site.hotlineTel}`}
+        >
+          <Icon name="phone" class={blockIconClass} />
+        </ContactIconBlock>
+
+        <ContactIconBlock
+          heading="Địa chỉ chi nhánh"
+          content="Mang máy đến trực tiếp để kiểm tra và báo giá."
+          isAddressVisible={true}
+          addressContent={fullAddress}
+        >
+          <Icon name="mapPin" class={blockIconClass} />
+        </ContactIconBlock>
+
+        <ContactIconBlock heading="Giờ làm việc" content={site.hours.text}>
+          <Icon name="clock" class={blockIconClass} />
+        </ContactIconBlock>
+
+        {site.email && (
+          <ContactIconBlock
+            heading="Email"
+            content="Gửi yêu cầu báo giá số lượng hoặc thanh lý máy văn phòng."
+            isLinkVisible={true}
+            linkTitle={site.email}
+            linkURL={`mailto:${site.email}`}
+          >
+            <Icon name="envelopeOpen" class={blockIconClass} />
+          </ContactIconBlock>
+        )}
+      </div>
+
+      <div class="overflow-hidden rounded-xl bg-neutral-100 dark:bg-white/[.05]">
+        {site.mapsEmbed ? (
+          <iframe
+            src={site.mapsEmbed}
+            title={`Bản đồ ${site.brand}`}
+            class="aspect-square w-full border-0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        ) : (
+          <div class="flex aspect-square flex-col items-center justify-center gap-3 p-8 text-center text-neutral-600 dark:text-neutral-400">
+            <Icon name="mapPin" class="h-12 w-12 text-orange-400" />
+            <p class="font-bold text-neutral-800 dark:text-neutral-200">{fullAddress}</p>
+            {site.mapsLink && (
+              <a class="text-orange-400 underline" href={site.mapsLink} rel="noopener">
+                {t.contact.directions}
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

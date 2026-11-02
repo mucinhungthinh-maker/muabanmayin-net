@@ -1,41 +1,74 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
-import CTA from '../components/CTA.astro';
-import PostCard from '../components/PostCard.astro';
-import { services } from '../data/content';
-import { breadcrumbSchema } from '../lib/schema';
-import { getPosts } from '../lib/posts';
+import MainLayout from '@/layouts/MainLayout.astro';
+import Breadcrumb from '@components/ui/blocks/Breadcrumb.astro';
+import MainSection from '@components/ui/blocks/MainSection.astro';
+import AlternatingSections, { type Article } from '@components/ui/blocks/AlternatingSections.astro';
+import CardRelated from '@components/ui/cards/CardRelated.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import FAQ from '@components/sections/misc/FAQ.astro';
+import { images, services } from '@data/content';
+import { site } from '@data/site';
+import { getPosts } from '@utils/content';
 
-const s = services.find((x) => x.slug === 'thu-mua-may-in')!;
-const posts = await getPosts('thu-mua-may-in');
-const crumbs = [{ name: 'Thu mua máy in', href: '/thu-mua-may-in/' }];
+const crumbs = [{ name: 'Thu mua máy in', path: '/thu-mua-may-in/' }];
+const posts = (await getPosts('thu-mua-may-in')).slice(0, 3);
+
+const articles: Article[] = [
+  {
+    title: 'Nhận những loại máy nào',
+    subTitle: `${services[2].points.join('. ')}. Nhận máy in laser, máy in phun, máy in đa năng của các hãng phổ biến.`,
+    images: [
+      { src: images.mayInQuay, alt: 'Máy in laser màu đa năng văn phòng' },
+      { src: images.mayInSanGo, alt: 'Máy in phun đa năng gia đình' },
+    ],
+  },
+  {
+    title: 'Gửi hình để được báo giá nhanh',
+    subTitle:
+      'Chụp mặt trước máy và tem ghi model (thường ở mặt sau hoặc dưới đáy). Nếu máy còn in được, chụp thêm 1 trang in thử. Ghi số lượng nếu thanh lý nhiều máy. Gửi qua Zalo — cửa hàng báo giá sơ bộ, xem máy thực tế rồi chốt.',
+    images: [{ src: images.bamNut, alt: 'Kiểm tra bảng điều khiển máy in trước khi định giá' }],
+    cta: { title: 'Gửi hình qua Zalo', url: site.zalo },
+  },
+];
+
+const faq = {
+  subTitle: 'Thắc mắc thường gặp khi bán máy in cũ.',
+  faqs: [
+    {
+      question: 'Máy in hỏng không lên nguồn có thu mua không?',
+      answer: 'Có. Máy hỏng được định giá theo linh kiện còn dùng được, thấp hơn máy còn chạy.',
+    },
+    {
+      question: 'Giá thu mua dựa vào đâu?',
+      answer: 'Model, tình trạng hoạt động, số trang đã in và phụ kiện đi kèm (hộp mực, dây nguồn, khay giấy).',
+    },
+    {
+      question: 'Thanh lý nhiều máy văn phòng thì sao?',
+      answer: 'Gửi danh sách model và số lượng qua Zalo hoặc gọi hotline để hẹn xem máy và báo giá trọn lô.',
+    },
+  ],
+};
 ---
 
-<BaseLayout
+<MainLayout
   title="Thu mua máy in cũ, máy in hỏng Quận 12"
-  description="Thu mua máy in cũ, máy in hỏng, máy thanh lý văn phòng tại Quận 12. Gửi hình qua Zalo để được báo giá sơ bộ."
-  schema={[breadcrumbSchema(crumbs)]}
+  description="Thu mua máy in cũ, máy in hỏng, máy thanh lý văn phòng tại Quận 12. Gửi hình qua Zalo để được báo giá sơ bộ, xem máy rồi chốt giá."
+  breadcrumbs={crumbs}
+  faqs={faq.faqs}
 >
   <Breadcrumb items={crumbs} />
-  <div class="mx-auto max-w-4xl px-4 py-6">
-    <h1 class="text-3xl font-extrabold md:text-4xl">Thu mua máy in cũ tại Quận 12</h1>
-    <p class="mt-3 text-lg text-slate-700">{s.summary}</p>
-    <h2 class="mt-8 text-2xl font-bold">Nhận những loại máy nào</h2>
-    <ul class="mt-3 list-disc space-y-1 pl-6 text-slate-700">{s.errors.map((e) => <li>{e}</li>)}</ul>
-    <h2 class="mt-8 text-2xl font-bold">Cách gửi thông tin để báo giá nhanh</h2>
-    <ol class="mt-3 list-decimal space-y-1 pl-6 text-slate-700">
-      <li>Chụp mặt trước máy và tem ghi model (thường ở mặt sau hoặc dưới đáy).</li>
-      <li>Nếu máy còn in được: chụp 1 trang in thử.</li>
-      <li>Ghi số lượng máy nếu thanh lý nhiều máy.</li>
-      <li>Gửi qua Zalo — cửa hàng báo giá sơ bộ, xem máy thực tế rồi chốt.</li>
-    </ol>
-  </div>
+  <MainSection
+    title="Thu mua máy in cũ tại Quận 12"
+    subTitle={services[2].summary}
+    cta={{ title: `Gọi ${site.hotline}`, url: `tel:${site.hotlineTel}` }}
+  />
+  <AlternatingSections articles={articles} />
+  <FAQ title="Hỏi đáp<br />thu mua máy in" faqs={faq} />
   {posts.length > 0 && (
-    <section class="mx-auto max-w-6xl px-4 py-6">
-      <h2 class="text-2xl font-bold">Bài viết về thu mua máy in</h2>
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+    <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+      <h2 class="mb-8 text-2xl font-bold text-neutral-800 md:text-3xl dark:text-neutral-200">Bài viết về thu mua máy in</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map(p => <CardRelated blogEntry={p} />)}</div>
     </section>
   )}
-  <CTA title="Có máy in cũ cần bán?" text="Gửi hình máy qua Zalo để được báo giá." />
-</BaseLayout>
+  <CTASection title="Có máy in cũ cần bán?" subTitle="Gửi hình máy qua Zalo để được báo giá." />
+</MainLayout>

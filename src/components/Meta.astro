@@ -1,0 +1,61 @@
+---
+import { getImage } from 'astro:assets';
+import { OG, SITE } from '@data/constants';
+import faviconSvgSrc from '@images/icon.svg';
+import faviconSrc from '@images/icon.png';
+import type { PageMetadata } from '@utils/metadata';
+
+/** Thẻ <head>: mọi giá trị riêng của trang lấy từ buildPageMetadata(). */
+interface Props {
+  metadata: PageMetadata;
+  /** Ảnh OG riêng (vd ảnh bìa bài viết); mặc định ảnh chung của site. */
+  ogImage?: ImageMetadata;
+}
+
+const { metadata, ogImage } = Astro.props;
+
+const socialImageRes = await getImage({
+  src: ogImage ?? OG.image,
+  width: 1200,
+  height: 630,
+  format: 'jpg',
+});
+const socialImage = new URL(socialImageRes.src, SITE.url).href;
+
+const faviconSvg = await getImage({ src: faviconSvgSrc, format: 'svg' });
+const appleTouchIcon = await getImage({
+  src: faviconSrc,
+  width: 180,
+  height: 180,
+  format: 'png',
+});
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{metadata.title}</title>
+<meta name="description" content={metadata.description} />
+<meta name="robots" content={metadata.robots} />
+<link rel="canonical" href={metadata.canonical} />
+<script type="application/ld+json" set:html={JSON.stringify(metadata.jsonLd)} />
+
+<meta property="og:locale" content={metadata.ogLocale} />
+<meta property="og:url" content={metadata.canonical} />
+<meta property="og:type" content={metadata.ogType} />
+<meta property="og:title" content={metadata.ogTitle} />
+<meta property="og:site_name" content={SITE.author} />
+<meta property="og:description" content={metadata.ogDescription} />
+<meta property="og:image" content={socialImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={metadata.ogTitle} />
+<meta name="twitter:description" content={metadata.ogDescription} />
+<meta name="twitter:image" content={socialImage} />
+
+<link rel="manifest" href="/manifest.json" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link href="/favicon.ico" rel="icon" sizes="any" type="image/x-icon" />
+<link href={faviconSvg.src} rel="icon" type="image/svg+xml" sizes="any" />
+<link href={appleTouchIcon.src} rel="apple-touch-icon" />
+<meta name="theme-color" content="#facc15" />

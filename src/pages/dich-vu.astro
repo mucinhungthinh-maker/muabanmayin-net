@@ -1,32 +1,57 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
-import CTA from '../components/CTA.astro';
-import { services } from '../data/content';
-import { breadcrumbSchema } from '../lib/schema';
+import MainLayout from '@/layouts/MainLayout.astro';
+import MainSection from '@components/ui/blocks/MainSection.astro';
+import Breadcrumb from '@components/ui/blocks/Breadcrumb.astro';
+import AlternatingSections, { type Article } from '@components/ui/blocks/AlternatingSections.astro';
+import StepsSection from '@components/sections/misc/StepsSection.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import { services, images } from '@data/content';
+import { site } from '@data/site';
 
-const crumbs = [{ name: 'Dịch vụ', href: '/dich-vu/' }];
+const crumbs = [{ name: 'Dịch vụ', path: '/dich-vu/' }];
+
+const articles: Article[] = [
+  {
+    title: 'Sửa máy in laser, máy in phun',
+    subTitle: `${services[0].long} Lỗi hay gặp: ${services[0].points.join('; ').toLowerCase()}.`,
+    images: [...services[0].images],
+  },
+  {
+    title: 'Bán máy in cũ đã kiểm tra',
+    subTitle: services[1].long,
+    images: [{ src: images.mayInBan, alt: 'Máy in phun Epson đang in ảnh màu' }],
+    cta: { title: 'Xem các dòng máy in cũ', url: '/may-in-cu/' },
+  },
+  {
+    title: 'Thu mua máy in cũ, máy hỏng',
+    subTitle: services[2].long,
+    images: [
+      { src: images.mayInCuaSo, alt: 'Máy in laser HP cũ trong văn phòng' },
+      { src: images.mayInSanGo, alt: 'Máy in phun đa năng cũ đặt trên sàn gỗ' },
+    ],
+    cta: { title: 'Cách bán máy in cũ', url: '/thu-mua-may-in/' },
+  },
+  {
+    title: 'Vệ sinh, bảo dưỡng định kỳ',
+    subTitle:
+      'Máy in văn phòng in nhiều nên vệ sinh đường giấy, trống và cụm sấy định kỳ để hạn chế kẹt giấy và bản in mờ. Kỹ thuật viên kiểm tra và báo các linh kiện sắp hết tuổi thọ để anh chị chủ động thay.',
+    images: [{ src: images.mayInCan, alt: 'Bên trong máy in phun với các hộp mực màu' }],
+  },
+];
 ---
 
-<BaseLayout
+<MainLayout
   title="Dịch vụ sửa máy in, bán & thu mua máy in Quận 12"
   description="Sửa máy in laser, máy in phun các hãng; bán máy in cũ đã kiểm tra; thu mua máy in cũ, máy hỏng. Chi nhánh Tô Ký, Quận 12."
-  schema={[breadcrumbSchema(crumbs)]}
+  breadcrumbs={crumbs}
 >
   <Breadcrumb items={crumbs} />
-  <div class="mx-auto max-w-4xl px-4 py-6">
-    <h1 class="text-3xl font-extrabold md:text-4xl">Dịch vụ máy in tại chi nhánh Tô Ký, Quận 12</h1>
-    <p class="mt-3 text-lg text-slate-700">Ba nhóm việc chính: sửa chữa, bán máy in cũ và thu mua máy in cũ.</p>
-    {services.map((s) => (
-      <section id={s.slug} class="mt-10 scroll-mt-24 rounded-2xl border border-slate-200 p-6">
-        <h2 class="text-2xl font-bold text-brand">{s.title}</h2>
-        <p class="mt-2 text-slate-700">{s.summary}</p>
-        <h3 class="mt-4 font-semibold">{s.slug === 'sua-may-in' ? 'Lỗi thường gặp' : 'Gồm những gì'}</h3>
-        <ul class="mt-2 list-disc space-y-1 pl-6 text-slate-700">{s.errors.map((e) => <li>{e}</li>)}</ul>
-        <p class="mt-4 text-slate-700"><strong>Thời gian:</strong> {s.time}</p>
-        {s.slug !== 'sua-may-in' && <a href={s.href} class="mt-3 inline-block font-semibold text-brand underline">Xem trang {s.title.toLowerCase()}</a>}
-      </section>
-    ))}
-  </div>
-  <CTA />
-</BaseLayout>
+  <MainSection
+    title="Dịch vụ máy in tại chi nhánh Tô Ký, Quận 12"
+    subTitle="Ba việc chính: sửa chữa, bán máy in cũ và thu mua máy in cũ. Mang máy đến cửa hàng hoặc gọi để được tư vấn trước."
+    cta={{ title: `Gọi ${site.hotline}`, url: `tel:${site.hotlineTel}` }}
+  />
+  <AlternatingSections articles={articles} />
+  <StepsSection title="Quy trình sửa máy in" />
+  <CTASection />
+</MainLayout>

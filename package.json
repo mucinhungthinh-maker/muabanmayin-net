@@ -1,21 +1,33 @@
 {
   "name": "muabanmayindotnet",
-  "version": "0.2.0",
-  "description": "muabanmayin.net — chi nhánh Tô Ký, Quận 12: sửa chữa, mua bán, thu mua máy in. Astro + Tailwind, host GitHub Pages, đăng bài từ Telegram.",
+  "version": "0.3.0",
+  "description": "muabanmayin.net — Máy In Tô Ký Q12: sửa chữa, mua bán, thu mua máy in. Astro + Tailwind, giao diện ScrewFast (MIT), host GitHub Pages.",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node process-html.mjs",
+    "check": "astro check",
     "preview": "astro preview",
-    "bot": "node bot/bot.cjs",
     "wayback": "node tools/wayback-urls.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.4",
+    "clipboard": "^2.0.11",
+    "gsap": "^3.15.0",
+    "html-minifier-terser": "^7.2.0",
+    "lenis": "^1.3.27",
+    "preline": "^5.0.0",
+    "sharp": "^0.35.5",
+    "sharp-ico": "^0.1.5",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.20",
+    "typescript": "^6.0.3"
   }
 }

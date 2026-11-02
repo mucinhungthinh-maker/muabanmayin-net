@@ -1,0 +1,109 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Breadcrumb from '@components/ui/blocks/Breadcrumb.astro';
+import CardRelated from '@components/ui/cards/CardRelated.astro';
+import SocialShare from '@components/ui/buttons/SocialShare.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import { capitalize, formatDate } from '@utils/utils';
+import { getPosts, pathFor, readTimeOf, slugOf } from '@utils/content';
+import { services } from '@data/content';
+import { site } from '@data/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map(post => {
+    // Bài liên quan: cùng chuyên mục trước, rồi bài mới nhất
+    const same = posts.filter(p => p.id !== post.id && p.data.category === post.data.category);
+    const other = posts.filter(p => p.id !== post.id && p.data.category !== post.data.category);
+    return { params: { id: slugOf(post) }, props: { post, related: [...same, ...other].slice(0, 2) } };
+  });
+}
+
+const { post, related } = Astro.props;
+const { Content } = await render(post);
+const { copy: t } = Astro.locals;
+const d = post.data;
+const service = services.find(s => s.slug === d.category) ?? services[0];
+const crumbs = [
+  { name: 'Kinh nghiệm', path: '/blog/' },
+  { name: d.title, path: pathFor(post) },
+];
+---
+
+<MainLayout
+  title={`${d.title} | Máy In Tô Ký`.length <= 60 ? `${d.title} | Máy In Tô Ký` : d.title}
+  description={d.description}
+  ogImage={d.cardImage}
+  kind={{
+    type: 'Article',
+    image: new URL(d.cardImage.src, site.url).href,
+    datePublished: d.pubDate,
+    dateModified: d.updatedDate,
+  }}
+  breadcrumbs={crumbs}
+>
+  <Breadcrumb items={crumbs} />
+  <section class="mx-auto max-w-3xl px-4 pt-6 pb-12 sm:px-6 lg:px-8 lg:pt-10">
+    <p class="text-sm text-neutral-500 dark:text-neutral-400">
+      <time datetime={d.pubDate.toISOString()}>{formatDate(d.pubDate)}</time>
+      {d.updatedDate && <> · cập nhật {formatDate(d.updatedDate)}</>}
+      {' · '}{t.blog.minRead(readTimeOf(post))}
+    </p>
+    <h1 class="mt-2 mb-6 text-3xl font-bold text-balance text-neutral-800 md:text-4xl dark:text-neutral-200">
+      {d.title}
+    </h1>
+    <Image
+      class="mb-8 w-full rounded-xl object-cover"
+      src={d.cardImage}
+      alt={d.cardImageAlt}
+      width={1200}
+      loading="eager"
+      draggable={'false'}
+    />
+    <article class="prose prose-lg prose-neutral dark:prose-invert mb-8 max-w-none text-pretty prose-a:text-orange-500 prose-img:rounded-xl">
+      <Content />
+    </article>
+    {d.youtube && (
+      <div class="mb-8 aspect-video overflow-hidden rounded-xl">
+        <iframe
+          class="h-full w-full"
+          src={`https://www.youtube-nocookie.com/embed/${d.youtube}`}
+          title={d.title}
+          loading="lazy"
+          allow="encrypted-media; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    )}
+    <div class="mb-8 rounded-xl bg-yellow-50 p-5 ring-1 ring-yellow-200 dark:bg-white/[.05] dark:ring-neutral-700">
+      <p class="text-neutral-700 dark:text-neutral-300">
+        Xem thêm dịch vụ:
+        <a class="font-bold text-orange-500 hover:underline" href={service.href}>{service.title}</a>
+        tại chi nhánh Tô Ký, Quận 12 — gọi
+        <a class="font-bold text-orange-500 hover:underline" href={`tel:${site.hotlineTel}`}>{site.hotline}</a>.
+      </p>
+    </div>
+    <div class="grid gap-y-5 sm:flex sm:items-center sm:justify-between sm:gap-y-0">
+      <div class="flex flex-wrap gap-x-2 gap-y-1">
+        {d.tags.map(tag => (
+          <span class="inline-flex items-center rounded-lg bg-neutral-400/30 px-3 py-1.5 text-xs font-medium text-neutral-700 dark:bg-neutral-700/60 dark:text-neutral-300">
+            {capitalize(tag)}
+          </span>
+        ))}
+      </div>
+      <div class="inline-flex"><SocialShare pageTitle={d.title} /></div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <h2 class="mb-8 text-2xl font-bold text-balance text-neutral-800 md:text-3xl dark:text-neutral-200">
+        {t.blog.relatedArticles}
+      </h2>
+      <div class="grid gap-6 sm:grid-cols-2">{related.map(entry => <CardRelated blogEntry={entry} />)}</div>
+    </section>
+  )}
+  <CTASection />
+</MainLayout>

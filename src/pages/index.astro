@@ -1,92 +1,101 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import PriceTable from '../components/PriceTable.astro';
-import FAQ from '../components/FAQ.astro';
-import CTA from '../components/CTA.astro';
-import PostCard from '../components/PostCard.astro';
-import YouTube from '../components/YouTube.astro';
-import { site } from '../data/site';
-import { services, steps, reasons, homeFaq } from '../data/content';
-import { faqSchema } from '../lib/schema';
-import { getPosts } from '../lib/posts';
+import MainLayout from '@/layouts/MainLayout.astro';
+import HeroSection from '@components/sections/landing/HeroSection.astro';
+import FeaturesGeneral from '@components/sections/features/FeaturesGeneral.astro';
+import FeaturesNavs from '@components/sections/features/FeaturesNavs.astro';
+import StepsSection from '@components/sections/misc/StepsSection.astro';
+import CTASection from '@components/sections/misc/CTASection.astro';
+import FAQ from '@components/sections/misc/FAQ.astro';
+import PriceTable from '@components/ui/blocks/PriceTable.astro';
+import PrimaryCTA from '@components/ui/buttons/PrimaryCTA.astro';
+import CardRelated from '@components/ui/cards/CardRelated.astro';
+import { site } from '@data/site';
+import { images, reasons, services, homeFaq } from '@data/content';
+import { getPosts } from '@utils/content';
 
-const posts = (await getPosts()).slice(0, 6);
-const youtubeId = site.youtubeIntro;
+const posts = (await getPosts()).slice(0, 3);
+const tabs = services.map((s, i) => ({
+  heading: s.title,
+  content: s.summary,
+  svg: s.svg,
+  src: s.images[0].src,
+  alt: s.images[0].alt,
+  first: i === 0,
+}));
 ---
 
-<BaseLayout
+<MainLayout
   title="Sửa máy in, mua bán máy in cũ Tô Ký Quận 12"
-  description="Sửa máy in, bán máy in cũ đã kiểm tra, thu mua máy in cũ tại đường Tô Ký, Quận 12. Báo giá trước khi làm."
-  schema={[faqSchema(homeFaq)]}
+  description={`Sửa máy in, bán máy in cũ đã kiểm tra, thu mua máy in cũ tại đường Tô Ký, Quận 12. Báo giá trước khi làm. Gọi ${site.hotline}.`}
+  faqs={homeFaq.faqs}
 >
-  <Hero title="Sửa máy in & mua bán máy in cũ tại Tô Ký, Quận 12" subtitle="Chi nhánh HT Group trên đường Tô Ký: sửa máy in laser, máy in phun; bán máy in cũ đã kiểm tra; thu mua máy in cũ, máy hỏng." />
+  <HeroSection
+    title='Sửa máy in & mua bán máy in cũ tại <span class="text-yellow-500 dark:text-yellow-400">Tô Ký, Quận 12</span>'
+    subTitle="Chi nhánh HT Group trên đường Tô Ký: sửa máy in laser, máy in phun; bán máy in cũ đã kiểm tra; thu mua máy in cũ, máy hỏng. Báo giá trước khi làm."
+    primaryBtn={`Gọi ${site.hotline}`}
+    primaryBtnURL={`tel:${site.hotlineTel}`}
+    secondaryBtn="Xem máy in cũ"
+    secondaryBtnURL="/may-in-cu/"
+    src={images.hero}
+    alt="Máy in laser đa năng HP tại cửa hàng máy in Tô Ký"
+  />
 
-  <section class="mx-auto max-w-6xl px-4 py-12">
-    <h2 class="text-2xl font-bold md:text-3xl">Dịch vụ chính</h2>
-    <div class="mt-6 grid gap-6 md:grid-cols-3">
-      {services.map((s) => <ServiceCard title={s.title} summary={s.summary} href={s.href} />)}
-    </div>
-  </section>
+  <FeaturesGeneral
+    title={`Vì sao chọn ${site.shortBrand}`}
+    subTitle="Một cửa hàng thật, có địa chỉ, kỹ thuật viên làm trực tiếp. Sửa được thì sửa, không đáng sửa thì nói thẳng để anh chị chọn đổi máy hoặc bán lại."
+    src={images.suaMach}
+    alt="Kỹ thuật viên sửa bo mạch thiết bị bằng tua vít chuyên dụng"
+    features={reasons}
+  />
 
-  <section class="bg-slate-50">
-    <div class="mx-auto max-w-6xl px-4 py-12">
-      <h2 class="text-2xl font-bold md:text-3xl">Vì sao chọn {site.shortBrand}</h2>
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {reasons.map((r) => (
-          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
-            <h3 class="font-bold text-brand">{r.title}</h3>
-            <p class="mt-2 text-slate-600">{r.text}</p>
-          </div>
-        ))}
+  <FeaturesNavs
+    title='Sửa chữa, bán máy cũ và thu mua — <span class="text-yellow-500 dark:text-yellow-400">một chỗ</span>'
+    tabs={tabs}
+  />
+
+  <StepsSection
+    title='Quy trình <span class="text-yellow-500 dark:text-yellow-400">4 bước</span>'
+    subTitle="Rõ ràng từ lúc nhận máy tới khi bàn giao — không sửa khi khách chưa đồng ý giá."
+  />
+
+  <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+    <div class="grid gap-10 lg:grid-cols-5">
+      <div class="lg:col-span-2">
+        <h2 class="text-2xl font-bold text-neutral-800 md:text-4xl md:leading-tight dark:text-neutral-200">
+          Bảng giá sửa máy in tham khảo
+        </h2>
+        <p class="mt-2 text-pretty text-neutral-600 dark:text-neutral-400">
+          Giá thay đổi theo model và linh kiện. Kiểm tra xong mới báo giá chính xác.
+        </p>
+        <div class="mt-6"><PrimaryCTA title="Xem bảng giá đầy đủ" url="/bang-gia/" /></div>
       </div>
+      <div class="lg:col-span-3"><PriceTable limit={5} /></div>
     </div>
   </section>
-
-  <section class="mx-auto max-w-6xl px-4 py-12">
-    <h2 class="text-2xl font-bold md:text-3xl">Quy trình 4 bước</h2>
-    <ol class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {steps.map((s, i) => (
-        <li class="rounded-2xl border border-slate-200 p-6">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand font-bold text-white">{i + 1}</span>
-          <h3 class="mt-3 font-bold">{s.title}</h3>
-          <p class="mt-1 text-slate-600">{s.text}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
-
-  <section class="mx-auto max-w-4xl px-4 py-12">
-    <h2 class="text-2xl font-bold md:text-3xl">Bảng giá sửa máy in tham khảo</h2>
-    <div class="mt-6"><PriceTable limit={4} /></div>
-    <a href="/bang-gia/" class="mt-4 inline-block font-semibold text-brand underline">Xem bảng giá đầy đủ</a>
-  </section>
-
-  {youtubeId && (
-    <section class="mx-auto max-w-4xl px-4 py-12">
-      <h2 class="text-2xl font-bold md:text-3xl">Video tại chi nhánh</h2>
-      <div class="mt-6"><YouTube id={youtubeId} title="Video chi nhánh Tô Ký" /></div>
-    </section>
-  )}
 
   {posts.length > 0 && (
-    <section class="mx-auto max-w-6xl px-4 py-12">
-      <h2 class="text-2xl font-bold md:text-3xl">Kinh nghiệm & ca sửa thực tế</h2>
-      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+    <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+      <div class="mb-10 flex items-end justify-between gap-4">
+        <h2 class="text-2xl font-bold text-neutral-800 md:text-4xl md:leading-tight dark:text-neutral-200">
+          Kinh nghiệm & ca sửa thực tế
+        </h2>
+        <a href="/blog/" class="shrink-0 font-bold text-orange-400 hover:underline">Xem tất cả →</a>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map(p => <CardRelated blogEntry={p} />)}
+      </div>
     </section>
   )}
 
-  <FAQ items={homeFaq} />
+  <FAQ title="Câu hỏi<br />thường gặp" faqs={homeFaq} />
 
-  <section class="bg-slate-50">
-    <div class="mx-auto max-w-6xl px-4 py-12">
-      <h2 class="text-2xl font-bold md:text-3xl">Khu vực phục vụ</h2>
-      <p class="mt-3 max-w-3xl text-slate-700">
-        Cửa hàng trên đường Tô Ký, Quận 12. Khách gần chi nhánh có thể mang máy đến trực tiếp; khu vực lân cận như {site.areaServed.slice(1, -1).join(', ')} gọi hotline để hẹn lịch.
-      </p>
-    </div>
+  <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+    <h2 class="text-2xl font-bold text-neutral-800 md:text-4xl dark:text-neutral-200">Khu vực phục vụ</h2>
+    <p class="mt-3 max-w-3xl text-pretty text-neutral-600 dark:text-neutral-400">
+      Cửa hàng trên đường Tô Ký, Quận 12. Khách gần chi nhánh mang máy đến trực tiếp; khu vực lân cận như
+      {' '}{site.areaServed.slice(1, -1).join(', ')} gọi hotline để hẹn lịch.
+    </p>
   </section>
 
-  <CTA />
-</BaseLayout>
+  <CTASection />
+</MainLayout>
