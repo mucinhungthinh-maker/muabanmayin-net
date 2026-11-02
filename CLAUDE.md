@@ -62,10 +62,11 @@ Luồng: nhân viên gửi ảnh/video + mô tả kỹ thuật trong **nhóm nh�
 (mặc định gemini-2.5-flash, cùng loại bot kỹ thuật) viết bài → gửi **riêng cho quản lý** kèm nút
 ✅ Đăng / ✏️ Sửa (nhắn yêu cầu, AI sửa) / 🔄 Viết lại / ❌ Hủy → Đăng = ghi `src/content/blog/<slug>/`,
 video vào `public/video/<slug>/`, **build thử**, git push → GitHub Actions deploy.
-- Cấu hình `.env` (mẫu `.env.example`): TELEGRAM_BOT_TOKEN, GEMINI_API_KEY, STAFF_GROUP_ID, ADMIN_IDS.
-- Chạy: `START-BOT.bat` (tự khởi động lại, log ở `logs/bot.log`). ffmpeg cài qua winget (Gyan.FFmpeg).
+- Bot RIÊNG (anh chọn tạo mới, không dùng lại bot Chợ Tốt). Cài đặt: bấm `START-BOT.bat` → lần đầu hỏi TELEGRAM_BOT_TOKEN + GEMINI_API_KEY (bot/setup.cjs ghi .env).
+  Người đầu tiên /start bot ở chat riêng tự thành quản lý (ADMIN_IDS); quản lý thêm bot vào nhóm → nhóm đó thành STAFF_GROUP_ID (hoặc /nhom). Bot tự ghi vào .env.
+- Tự khởi động lại khi lỗi, log ở `logs/bot.log`. ffmpeg cài qua winget (Gyan.FFmpeg).
 - Bot phải là **admin nhóm** (hoặc tắt privacy ở BotFather) mới đọc được tin nhắn thường trong nhóm.
-- Lệnh: /id · /huy · /ds (quản lý) · /an <slug> (quản lý, ẩn bài bằng `draft: true`).
+- Lệnh: /id · /huy · /nhom (quản lý, đổi nhóm nhân viên) · /ds (quản lý) · /an <slug> (quản lý, ẩn bài bằng `draft: true`).
 - Nháp lưu ở `bot/drafts/` (không lên git) → tắt bot không mất. Giới hạn: file Telegram ≤ 20MB.
 - Prompt cấm bịa giá/tên khách/số liệu; thiếu thông tin → AI hỏi lại nhân viên (needMore).
 

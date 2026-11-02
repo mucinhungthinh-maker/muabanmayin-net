@@ -32,15 +32,30 @@ const { download, processImage, processVideo, thumbForAI, MAX_TG_DOWNLOAD } = re
 const { writePost } = require('./ai.cjs');
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const STAFF_GROUP_ID = String(process.env.STAFF_GROUP_ID || '');
+let STAFF_GROUP_ID = String(process.env.STAFF_GROUP_ID || '');
 const ADMIN_IDS = String(process.env.ADMIN_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
+
+/** Ghi 1 khóa vào .env (thêm mới hoặc thay dòng cũ) — dùng cho tự cài đặt lần đầu */
+function setEnv(key, value) {
+  const f = path.join(ROOT, '.env');
+  let txt = fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : '';
+  const re = new RegExp(`^${key}=.*$`, 'm');
+  txt = re.test(txt) ? txt.replace(re, `${key}=${value}`) : `${txt.replace(/\s*$/, '\n')}${key}=${value}\n`;
+  fs.writeFileSync(f, txt);
+}
 const AUTO_PUSH = (process.env.AUTO_PUSH ?? '1') !== '0';
 if (!TOKEN && require.main === module) {
   console.error('Thiếu TELEGRAM_BOT_TOKEN trong .env');
   process.exit(1);
 }
 
-const log = (...a) => console.log(new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }), ...a);
+const LOG_FILE = path.join(ROOT, 'logs', 'bot.log');
+fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
+const log = (...a) => {
+  const line = [new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }), ...a.map(x => (x instanceof Error ? x.stack : x))].join(' ');
+  console.log(line);
+  fs.appendFile(LOG_FILE, line + '\n', () => {});
+};
 const isAdmin = id => ADMIN_IDS.includes(String(id));
 const allowedChat = ctx =>
   (STAFF_GROUP_ID && String(ctx.chat.id) === STAFF_GROUP_ID) || (ctx.chat.type === 'private' && isAdmin(ctx.from.id));
@@ -114,8 +129,49 @@ bot.on(['photo', 'video', 'document'], ctx => {
 });
 
 // ======================= LỆNH =======================
-bot.start(ctx =>
-  ctx.reply(
+// ---------- TỰ CÀI ĐẶT LẦN ĐẦU ----------
+// Chưa có quản lý → người đầu tiên /start bot ở chat riêng thành quản lý (bot mới, chỉ anh biết tên bot).
+// Chưa có nhóm → quản lý thêm bot vào nhóm (hoặc gõ /nhom trong nhóm) là nhóm đó thành nhóm nhân viên.
+async function claimGroup(telegram, chat, from) {
+  if (STAFF_GROUP_ID || !isAdmin(from.id) || !/group/.test(chat.type)) return false;
+  STAFF_GROUP_ID = String(chat.id);
+  setEnv('STAFF_GROUP_ID', STAFF_GROUP_ID);
+  log('Đã đặt nhóm nhân viên:', chat.title, STAFF_GROUP_ID);
+  const me = await telegram.getChatMember(chat.id, bot.botInfo.id).catch(() => null);
+  const isBotAdmin = me && ['administrator', 'creator'].includes(me.status);
+  await telegram.sendMessage(chat.id,
+    `✅ Nhóm "${chat.title}" đã thành nhóm đăng bài.\n` +
+      (isBotAdmin ? 'Nhân viên gửi ảnh/video + mô tả kỹ thuật vào đây là được.' : '⚠ Anh cấp quyền QUẢN TRỊ VIÊN cho bot trong nhóm này, nếu không bot không đọc được ảnh nhân viên gửi.') +
+      '\nGõ /start để xem hướng dẫn gửi bài.');
+  return true;
+}
+
+bot.on('my_chat_member', ctx => {
+  const st = ctx.myChatMember.new_chat_member.status;
+  if (['member', 'administrator'].includes(st)) claimGroup(ctx.telegram, ctx.chat, ctx.from).catch(() => {});
+});
+
+bot.command('nhom', async ctx => {
+  if (!isAdmin(ctx.from.id)) return;
+  if (STAFF_GROUP_ID === String(ctx.chat.id)) return ctx.reply('Nhóm này đã là nhóm đăng bài.');
+  if (STAFF_GROUP_ID) {
+    // đổi sang nhóm khác
+    STAFF_GROUP_ID = '';
+  }
+  if (!(await claimGroup(ctx.telegram, ctx.chat, ctx.from))) ctx.reply('Gõ /nhom bên trong nhóm nhân viên.');
+});
+
+bot.start(async ctx => {
+  if (!ADMIN_IDS.length && ctx.chat.type === 'private') {
+    ADMIN_IDS.push(String(ctx.from.id));
+    setEnv('ADMIN_IDS', ADMIN_IDS.join(','));
+    log('Đã đặt quản lý:', staffName(ctx.from), ctx.from.id);
+    await ctx.reply(
+      `✅ ${staffName(ctx.from)} đã là QUẢN LÝ của bot — bài nhân viên gửi sẽ về đây để duyệt.\n\n` +
+        'Bước tiếp: tạo nhóm Telegram cho nhân viên, thêm bot vào và cấp quyền quản trị viên. Bot tự nhận nhóm.'
+    );
+  }
+  return ctx.reply(
     'Bot đăng bài muabanmayin.net\n\n' +
       'CÁCH GỬI BÀI (trong nhóm nhân viên):\n' +
       '1) Gửi ảnh / video ca sửa, máy cũ, máy thu mua (gửi 1 lần nhiều tấm được)\n' +
@@ -124,8 +180,8 @@ bot.start(ctx =>
       '3) AI viết bài → quản lý duyệt → lên web.\n\n' +
       '⚠ Không chụp mặt khách, hóa đơn, địa chỉ, SĐT khách.\nVideo ≤ 20MB (quay ngắn 30–60 giây).\n\n' +
       'Lệnh: /huy (bỏ ảnh đang gửi dở) · /id'
-  )
-);
+  );
+});
 
 bot.command('id', ctx => ctx.reply(`chat id: ${ctx.chat.id}\nuser id của bạn: ${ctx.from.id}`));
 
@@ -449,7 +505,7 @@ async function publish(telegram, d, approver) {
 if (require.main === module) {
   fs.mkdirSync(DRAFTS, { recursive: true });
   bot.catch((e, ctx) => log('Lỗi xử lý update', ctx?.updateType, e.message));
-  bot.launch({ allowedUpdates: ['message', 'callback_query'] });
+  bot.launch({ allowedUpdates: ['message', 'callback_query', 'my_chat_member'] });
   log(`Bot muabanmayin.net đang chạy · nhóm NV: ${STAFF_GROUP_ID || '(chưa đặt)'} · quản lý: ${ADMIN_IDS.join(', ') || '(chưa đặt)'} · tự đẩy web: ${AUTO_PUSH ? 'BẬT' : 'TẮT'}`);
   process.once('SIGINT', () => bot.stop('SIGINT'));
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
