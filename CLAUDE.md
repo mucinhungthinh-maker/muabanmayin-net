@@ -64,6 +64,9 @@ Quy tắc nội dung: giọng kỹ thuật viên thật, không bịa số liệ
 - `A @` → 185.199.108.153 / .109.153 / .110.153 / .111.153 — **DNS only (mây xám)**
 - `CNAME www` → `mucinhungthinh-maker.github.io` — DNS only
 - Sau khi GitHub cấp cert: Settings → Pages → bật **Enforce HTTPS**, rồi khai báo Search Console + gửi sitemap-index.xml.
+- **Thực tế 02/11/2026:** anh đã thêm bản ghi ở chế độ Proxied (mây cam) → web chạy qua Cloudflare, HTTPS do Cloudflare cấp
+  (https 200, www → 301 về gốc, dashboard vẫn chạy). GitHub không cấp cert khi bật proxy — không cần.
+  Nên bật Cloudflare SSL/TLS → Edge Certificates → **Always Use HTTPS** (http hiện vẫn trả 200, chưa tự chuyển https).
 
 ## Backlink tên miền cũ
 archive.org đang chặn (429) từ máy này lúc dựng. Khi chạy được: `npm run wayback` → duyệt
