@@ -1,0 +1,4 @@
+{
+  "_ghi_chu": "URL cũ (của tên miền trước khi hết hạn) → URL mới. Chạy `npm run wayback` để lấy danh sách URL cũ có backlink, rồi điền vào đây. build.js tự tạo trang chuyển hướng.",
+  "_vi_du_/may-in-cu-gia-re.html": "/may-in-cu/"
+}

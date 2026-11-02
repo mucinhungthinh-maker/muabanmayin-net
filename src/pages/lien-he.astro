@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { site } from '../data/site';
+import { breadcrumbSchema } from '../lib/schema';
+
+const crumbs = [{ name: 'Liên hệ', href: '/lien-he/' }];
+---
+
+<BaseLayout
+  title={`Liên hệ máy in Tô Ký Quận 12 – ${site.hotline}`}
+  description={`Liên hệ sửa máy in, mua bán máy in cũ tại chi nhánh Tô Ký, Quận 12: hotline/Zalo ${site.hotline}, địa chỉ, giờ làm việc, bản đồ.`}
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="mx-auto max-w-4xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold md:text-4xl">Liên hệ chi nhánh Tô Ký, Quận 12</h1>
+    <div class="mt-6"><ContactBlock /></div>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href={`tel:${site.hotlineTel}`} class="rounded-lg bg-accent px-6 py-3 font-bold text-slate-900">Gọi {site.hotline}</a>
+      <a href={site.zalo} rel="nofollow noopener" class="rounded-lg bg-brand px-6 py-3 font-bold text-white">Nhắn Zalo</a>
+    </div>
+    {site.mapsEmbed && (
+      <iframe src={site.mapsEmbed} title={`Bản đồ ${site.brand}`} class="mt-8 aspect-video w-full rounded-2xl border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    )}
+  </div>
+</BaseLayout>

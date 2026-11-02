@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CTA from '../components/CTA.astro';
+import PostCard from '../components/PostCard.astro';
+import { services } from '../data/content';
+import { breadcrumbSchema } from '../lib/schema';
+import { getPosts } from '../lib/posts';
+
+const s = services.find((x) => x.slug === 'may-in-cu')!;
+const posts = await getPosts('may-in-cu');
+const crumbs = [{ name: 'Máy in cũ', href: '/may-in-cu/' }];
+---
+
+<BaseLayout
+  title="Máy in cũ giá tốt tại Tô Ký, Quận 12"
+  description="Bán máy in cũ HP, Canon, Brother đã kiểm tra, vệ sinh và in thử trước khi giao. Xem máy trực tiếp tại chi nhánh Tô Ký, Quận 12."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="mx-auto max-w-4xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold md:text-4xl">Máy in cũ tại Tô Ký, Quận 12</h1>
+    <p class="mt-3 text-lg text-slate-700">{s.summary} Gọi trước để hỏi máy còn hàng.</p>
+    <h2 class="mt-8 text-2xl font-bold">Máy được chuẩn bị thế nào</h2>
+    <ul class="mt-3 list-disc space-y-1 pl-6 text-slate-700">{s.errors.map((e) => <li>{e}</li>)}</ul>
+  </div>
+  <section class="mx-auto max-w-6xl px-4 py-6">
+    <h2 class="text-2xl font-bold">Máy đang có & kinh nghiệm chọn máy</h2>
+    {posts.length ? <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div> : <p class="mt-3 text-slate-600">Danh sách máy đang cập nhật — gọi hotline để hỏi.</p>}
+  </section>
+  <CTA title="Đang tìm máy in cũ?" text="Cho biết nhu cầu in (trắng đen/màu, số trang mỗi ngày) để được tư vấn máy phù hợp." />
+</BaseLayout>

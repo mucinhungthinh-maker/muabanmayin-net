@@ -1,0 +1,5 @@
+// Tạo public/og-default.png 1200x630 (tạm, thay bằng ảnh thật của chi nhánh sau)
+import sharp from 'sharp';
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0B5ED7"/><stop offset="1" stop-color="#0947A6"/></linearGradient></defs><rect width="1200" height="630" fill="url(#g)"/><text x="80" y="250" font-family="Segoe UI, Arial" font-size="76" font-weight="800" fill="#fff">Máy In Tô Ký</text><text x="80" y="340" font-family="Segoe UI, Arial" font-size="40" fill="#DBEAFE">Sửa chữa · Mua bán · Thu mua máy in</text><text x="80" y="400" font-family="Segoe UI, Arial" font-size="36" fill="#DBEAFE">Đường Tô Ký, Quận 12, TP.HCM</text><rect x="80" y="460" width="430" height="80" rx="16" fill="#F59E0B"/><text x="110" y="514" font-family="Segoe UI, Arial" font-size="40" font-weight="800" fill="#0F172A">muabanmayin.net</text></svg>`;
+await sharp(Buffer.from(svg)).png().toFile('public/og-default.png');
+console.log('og-default.png ok');

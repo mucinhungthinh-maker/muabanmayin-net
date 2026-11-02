@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import PostCard from '../../components/PostCard.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { getPosts } from '../../lib/posts';
+
+const posts = await getPosts();
+const crumbs = [{ name: 'Kinh nghiệm', href: '/blog/' }];
+---
+
+<BaseLayout
+  title="Kinh nghiệm sửa & chọn mua máy in cũ"
+  description="Ca sửa máy in thực tế, kinh nghiệm chọn mua máy in cũ, cách định giá khi bán máy in cũ — từ kỹ thuật viên chi nhánh Tô Ký, Quận 12."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="mx-auto max-w-6xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold md:text-4xl">Kinh nghiệm sửa máy in & mua bán máy in cũ</h1>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+  </div>
+</BaseLayout>

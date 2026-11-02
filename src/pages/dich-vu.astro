@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CTA from '../components/CTA.astro';
+import { services } from '../data/content';
+import { breadcrumbSchema } from '../lib/schema';
+
+const crumbs = [{ name: 'Dịch vụ', href: '/dich-vu/' }];
+---
+
+<BaseLayout
+  title="Dịch vụ sửa máy in, bán & thu mua máy in Quận 12"
+  description="Sửa máy in laser, máy in phun các hãng; bán máy in cũ đã kiểm tra; thu mua máy in cũ, máy hỏng. Chi nhánh Tô Ký, Quận 12."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="mx-auto max-w-4xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold md:text-4xl">Dịch vụ máy in tại chi nhánh Tô Ký, Quận 12</h1>
+    <p class="mt-3 text-lg text-slate-700">Ba nhóm việc chính: sửa chữa, bán máy in cũ và thu mua máy in cũ.</p>
+    {services.map((s) => (
+      <section id={s.slug} class="mt-10 scroll-mt-24 rounded-2xl border border-slate-200 p-6">
+        <h2 class="text-2xl font-bold text-brand">{s.title}</h2>
+        <p class="mt-2 text-slate-700">{s.summary}</p>
+        <h3 class="mt-4 font-semibold">{s.slug === 'sua-may-in' ? 'Lỗi thường gặp' : 'Gồm những gì'}</h3>
+        <ul class="mt-2 list-disc space-y-1 pl-6 text-slate-700">{s.errors.map((e) => <li>{e}</li>)}</ul>
+        <p class="mt-4 text-slate-700"><strong>Thời gian:</strong> {s.time}</p>
+        {s.slug !== 'sua-may-in' && <a href={s.href} class="mt-3 inline-block font-semibold text-brand underline">Xem trang {s.title.toLowerCase()}</a>}
+      </section>
+    ))}
+  </div>
+  <CTA />
+</BaseLayout>

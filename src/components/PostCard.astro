@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+interface Props { post: CollectionEntry<'blog'> }
+const { post } = Astro.props;
+const { title, description, pubDate, cover, coverAlt } = post.data;
+---
+
+<article class="overflow-hidden rounded-2xl border border-slate-200 transition hover:shadow-lg">
+  <a href={`/blog/${post.id}/`} class="block h-full">
+    {cover ? (
+      <Image src={cover} alt={coverAlt || title} width={640} height={360} class="aspect-video w-full object-cover" loading="lazy" />
+    ) : (
+      <div class="flex aspect-video items-center justify-center bg-gradient-to-br from-blue-50 to-amber-50 px-6 text-center font-bold text-brand">{title}</div>
+    )}
+    <div class="p-5">
+      <time datetime={pubDate.toISOString()} class="text-sm text-slate-600">{pubDate.toLocaleDateString('vi-VN')}</time>
+      <h3 class="mt-1 text-lg font-bold leading-snug">{title}</h3>
+      <p class="mt-2 line-clamp-3 text-slate-600">{description}</p>
+    </div>
+  </a>
+</article>

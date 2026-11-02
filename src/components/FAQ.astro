@@ -1,0 +1,20 @@
+---
+// Hiển thị FAQ. Trang dùng FAQ thì tự thêm faqSchema(items) vào prop schema của BaseLayout.
+interface Props { items: { q: string; a: string }[]; title?: string }
+const { items, title = 'Câu hỏi thường gặp' } = Astro.props;
+---
+
+<section class="mx-auto max-w-3xl px-4 py-12">
+  <h2 class="text-2xl font-bold md:text-3xl">{title}</h2>
+  <div class="mt-6 divide-y divide-slate-200 rounded-xl border border-slate-200">
+    {items.map((f) => (
+      <details class="group p-5">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
+          {f.q}
+          <span class="text-brand transition group-open:rotate-45" aria-hidden="true">+</span>
+        </summary>
+        <p class="mt-3 text-slate-700">{f.a}</p>
+      </details>
+    ))}
+  </div>
+</section>

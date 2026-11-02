@@ -1,0 +1,19 @@
+---
+import { site, fullAddress } from '../data/site';
+---
+
+<div class="grid gap-4 rounded-2xl bg-slate-50 p-6 sm:grid-cols-2">
+  <div>
+    <p class="text-sm text-slate-600">Hotline / Zalo</p>
+    <a href={`tel:${site.hotlineTel}`} class="text-2xl font-extrabold text-brand">{site.hotline}</a>
+  </div>
+  <div>
+    <p class="text-sm text-slate-600">Giờ làm việc</p>
+    <p class="font-semibold">{site.hours.text}</p>
+  </div>
+  <div class="sm:col-span-2">
+    <p class="text-sm text-slate-600">Địa chỉ chi nhánh</p>
+    <p class="font-semibold">{fullAddress}</p>
+    {site.mapsLink && <a href={site.mapsLink} rel="noopener" class="text-brand underline">Chỉ đường Google Maps</a>}
+  </div>
+</div>

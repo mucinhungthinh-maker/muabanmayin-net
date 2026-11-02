@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import PriceTable from '../components/PriceTable.astro';
+import CTA from '../components/CTA.astro';
+import { breadcrumbSchema } from '../lib/schema';
+
+const crumbs = [{ name: 'Bảng giá', href: '/bang-gia/' }];
+---
+
+<BaseLayout
+  title="Bảng giá sửa máy in tham khảo – Tô Ký, Quận 12"
+  description="Bảng giá tham khảo sửa máy in, vệ sinh, thay linh kiện tại chi nhánh Tô Ký, Quận 12. Báo giá chính xác sau khi kiểm tra máy."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="mx-auto max-w-4xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold md:text-4xl">Bảng giá sửa máy in tham khảo</h1>
+    <p class="mt-3 text-lg text-slate-700">Giá thay đổi theo model và tình trạng linh kiện. Kỹ thuật viên kiểm tra và báo giá trước, anh chị đồng ý mới làm.</p>
+    <div class="mt-8"><PriceTable /></div>
+    <p class="mt-6 text-slate-700">Cần bán máy cũ? Xem <a class="font-semibold text-brand underline" href="/thu-mua-may-in/">thu mua máy in</a>. Cần mua máy? Xem <a class="font-semibold text-brand underline" href="/may-in-cu/">máy in cũ</a>.</p>
+  </div>
+  <CTA />
+</BaseLayout>

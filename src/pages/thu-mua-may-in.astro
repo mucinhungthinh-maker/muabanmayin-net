@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CTA from '../components/CTA.astro';
+import PostCard from '../components/PostCard.astro';
+import { services } from '../data/content';
+import { breadcrumbSchema } from '../lib/schema';
+import { getPosts } from '../lib/posts';
+
+const s = services.find((x) => x.slug === 'thu-mua-may-in')!;
+const posts = await getPosts('thu-mua-may-in');
+const crumbs = [{ name: 'Thu mua máy in', href: '/thu-mua-may-in/' }];
+---
+
+<BaseLayout
+  title="Thu mua máy in cũ, máy in hỏng Quận 12"
+  description="Thu mua máy in cũ, máy in hỏng, máy thanh lý văn phòng tại Quận 12. Gửi hình qua Zalo để được báo giá sơ bộ."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="mx-auto max-w-4xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold md:text-4xl">Thu mua máy in cũ tại Quận 12</h1>
+    <p class="mt-3 text-lg text-slate-700">{s.summary}</p>
+    <h2 class="mt-8 text-2xl font-bold">Nhận những loại máy nào</h2>
+    <ul class="mt-3 list-disc space-y-1 pl-6 text-slate-700">{s.errors.map((e) => <li>{e}</li>)}</ul>
+    <h2 class="mt-8 text-2xl font-bold">Cách gửi thông tin để báo giá nhanh</h2>
+    <ol class="mt-3 list-decimal space-y-1 pl-6 text-slate-700">
+      <li>Chụp mặt trước máy và tem ghi model (thường ở mặt sau hoặc dưới đáy).</li>
+      <li>Nếu máy còn in được: chụp 1 trang in thử.</li>
+      <li>Ghi số lượng máy nếu thanh lý nhiều máy.</li>
+      <li>Gửi qua Zalo — cửa hàng báo giá sơ bộ, xem máy thực tế rồi chốt.</li>
+    </ol>
+  </div>
+  {posts.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 py-6">
+      <h2 class="text-2xl font-bold">Bài viết về thu mua máy in</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+    </section>
+  )}
+  <CTA title="Có máy in cũ cần bán?" text="Gửi hình máy qua Zalo để được báo giá." />
+</BaseLayout>

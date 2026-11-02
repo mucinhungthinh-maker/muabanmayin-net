@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import PostCard from '../components/PostCard.astro';
+import YouTube from '../components/YouTube.astro';
+import CTA from '../components/CTA.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { services } from '../data/content';
+import { site } from '../data/site';
+
+interface Props { post: CollectionEntry<'blog'>; related: CollectionEntry<'blog'>[] }
+const { post, related } = Astro.props;
+const { title, description, pubDate, updatedDate, cover, coverAlt, youtube, category } = post.data;
+const url = `/blog/${post.id}/`;
+const crumbs = [{ name: 'Kinh nghiệm', href: '/blog/' }, { name: title, href: url }];
+const service = services.find((s) => s.slug === category) ?? services[0];
+
+const article = {
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  mainEntityOfPage: new URL(url, site.url).href,
+  image: new URL(cover?.src ?? site.ogImage, site.url).href,
+  author: { '@type': 'Organization', name: site.brand, url: site.url },
+  publisher: { '@id': `${site.url}/#business` },
+};
+---
+
+<BaseLayout title={`${title} | ${site.shortBrand}`.length <= 60 ? `${title} | ${site.shortBrand}` : title} description={description} ogType="article" ogImage={cover?.src} schema={[article, breadcrumbSchema(crumbs)]}>
+  <Breadcrumb items={crumbs} />
+  <article class="mx-auto max-w-3xl px-4 py-6">
+    <h1 class="text-3xl font-extrabold leading-tight md:text-4xl">{title}</h1>
+    <p class="mt-2 text-sm text-slate-600">
+      <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString('vi-VN')}</time>
+      {updatedDate && <> · cập nhật <time datetime={updatedDate.toISOString()}>{updatedDate.toLocaleDateString('vi-VN')}</time></>}
+    </p>
+    {cover && <Image src={cover} alt={coverAlt || title} width={1200} height={675} class="mt-6 w-full rounded-2xl" loading="eager" />}
+    <div class="prose prose-slate prose-lg mt-6 max-w-none prose-a:text-brand prose-img:rounded-xl">
+      <slot />
+    </div>
+    {youtube && <div class="mt-8"><YouTube id={youtube} title={title} /></div>}
+    <p class="mt-8 rounded-xl bg-blue-50 p-5">
+      Xem thêm dịch vụ: <a class="font-semibold text-brand underline" href={service.href}>{service.title}</a> tại chi nhánh Tô Ký, Quận 12.
+    </p>
+  </article>
+  {related.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4">
+      <h2 class="text-2xl font-bold">Bài liên quan</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{related.map((p) => <PostCard post={p} />)}</div>
+    </section>
+  )}
+  <CTA />
+</BaseLayout>

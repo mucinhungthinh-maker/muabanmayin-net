@@ -1,0 +1,21 @@
+{
+  "name": "muabanmayindotnet",
+  "version": "0.2.0",
+  "description": "muabanmayin.net — chi nhánh Tô Ký, Quận 12: sửa chữa, mua bán, thu mua máy in. Astro + Tailwind, host GitHub Pages, đăng bài từ Telegram.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "bot": "node bot/bot.cjs",
+    "wayback": "node tools/wayback-urls.cjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.4",
+    "tailwindcss": "^4.3.3"
+  }
+}

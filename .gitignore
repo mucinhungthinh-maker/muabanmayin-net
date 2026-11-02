@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+.env
+bot/state.json
+logs/
+*.log

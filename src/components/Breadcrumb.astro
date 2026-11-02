@@ -1,0 +1,17 @@
+---
+// items: [{ name, href }] — không gồm "Trang chủ" (tự thêm). Mục cuối là trang hiện tại.
+interface Props { items: { name: string; href: string }[] }
+const { items } = Astro.props;
+const all = [{ name: 'Trang chủ', href: '/' }, ...items];
+---
+
+<nav aria-label="Breadcrumb" class="mx-auto max-w-6xl px-4 pt-5 text-sm text-slate-600">
+  <ol class="flex flex-wrap gap-1">
+    {all.map((it, i) => (
+      <li class="flex gap-1">
+        {i > 0 && <span aria-hidden="true">›</span>}
+        {i < all.length - 1 ? <a class="hover:text-brand underline-offset-2 hover:underline" href={it.href}>{it.name}</a> : <span aria-current="page">{it.name}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>

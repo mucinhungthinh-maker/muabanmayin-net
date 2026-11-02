@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout title="Không tìm thấy trang | Máy In Tô Ký" description="Trang bạn tìm không tồn tại hoặc đã chuyển." noindex>
+  <div class="mx-auto max-w-2xl px-4 py-20 text-center">
+    <p class="text-6xl font-extrabold text-brand">404</p>
+    <h1 class="mt-4 text-2xl font-bold">Không tìm thấy trang</h1>
+    <p class="mt-3 text-slate-700">Trang này đã chuyển hoặc không còn tồn tại.</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="/" class="rounded-lg bg-brand px-6 py-3 font-bold text-white">Về trang chủ</a>
+      <a href={`tel:${site.hotlineTel}`} class="rounded-lg bg-accent px-6 py-3 font-bold text-slate-900">Gọi {site.hotline}</a>
+    </div>
+  </div>
+</BaseLayout>

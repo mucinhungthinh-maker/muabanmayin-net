@@ -1,0 +1,10 @@
+---
+interface Props { title: string; summary: string; href: string }
+const { title, summary, href } = Astro.props;
+---
+
+<a href={href} class="group block rounded-2xl border border-slate-200 p-6 transition hover:border-brand hover:shadow-lg">
+  <h3 class="text-xl font-bold text-brand">{title}</h3>
+  <p class="mt-2 text-slate-600">{summary}</p>
+  <span class="mt-4 inline-block font-semibold text-brand group-hover:underline">Xem chi tiết →</span>
+</a>

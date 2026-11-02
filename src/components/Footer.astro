@@ -1,0 +1,29 @@
+---
+import { site, nav, fullAddress, sameAs } from '../data/site';
+---
+
+<footer class="mt-16 bg-slate-900 text-slate-300">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-3">
+    <div>
+      <p class="text-lg font-bold text-white">{site.brand}</p>
+      <p class="mt-2 text-sm">{site.tagline}. Thuộc {site.owner}.</p>
+    </div>
+    <div class="text-sm">
+      <p class="font-semibold text-white">Liên hệ</p>
+      <p class="mt-2">Địa chỉ: {fullAddress}</p>
+      <p>Hotline/Zalo: <a class="text-amber-300 underline" href={`tel:${site.hotlineTel}`}>{site.hotline}</a></p>
+      <p>Giờ làm việc: {site.hours.text}</p>
+    </div>
+    <nav aria-label="Liên kết chân trang" class="text-sm">
+      <p class="font-semibold text-white">Trang</p>
+      <ul class="mt-2 grid grid-cols-2 gap-1">
+        {nav.map((n) => <li><a class="hover:text-white" href={n.href}>{n.label}</a></li>)}
+        <li><a class="hover:text-white" href="/gioi-thieu/">Giới thiệu</a></li>
+      </ul>
+      {sameAs.length > 0 && (
+        <ul class="mt-3 flex gap-3">{sameAs.map((u) => <li><a class="underline" href={u} rel="noopener">{new URL(u).hostname.replace('www.', '')}</a></li>)}</ul>
+      )}
+    </nav>
+  </div>
+  <p class="border-t border-slate-800 py-4 text-center text-xs">© {new Date().getFullYear()} {site.brand} — {site.domain}</p>
+</footer>

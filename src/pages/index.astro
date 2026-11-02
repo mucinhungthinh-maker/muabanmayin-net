@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import PriceTable from '../components/PriceTable.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import PostCard from '../components/PostCard.astro';
+import YouTube from '../components/YouTube.astro';
+import { site } from '../data/site';
+import { services, steps, reasons, homeFaq } from '../data/content';
+import { faqSchema } from '../lib/schema';
+import { getPosts } from '../lib/posts';
+
+const posts = (await getPosts()).slice(0, 6);
+const youtubeId = site.youtubeIntro;
+---
+
+<BaseLayout
+  title="Sửa máy in, mua bán máy in cũ Tô Ký Quận 12"
+  description="Sửa máy in, bán máy in cũ đã kiểm tra, thu mua máy in cũ tại đường Tô Ký, Quận 12. Báo giá trước khi làm."
+  schema={[faqSchema(homeFaq)]}
+>
+  <Hero title="Sửa máy in & mua bán máy in cũ tại Tô Ký, Quận 12" subtitle="Chi nhánh HT Group trên đường Tô Ký: sửa máy in laser, máy in phun; bán máy in cũ đã kiểm tra; thu mua máy in cũ, máy hỏng." />
+
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    <h2 class="text-2xl font-bold md:text-3xl">Dịch vụ chính</h2>
+    <div class="mt-6 grid gap-6 md:grid-cols-3">
+      {services.map((s) => <ServiceCard title={s.title} summary={s.summary} href={s.href} />)}
+    </div>
+  </section>
+
+  <section class="bg-slate-50">
+    <div class="mx-auto max-w-6xl px-4 py-12">
+      <h2 class="text-2xl font-bold md:text-3xl">Vì sao chọn {site.shortBrand}</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {reasons.map((r) => (
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+            <h3 class="font-bold text-brand">{r.title}</h3>
+            <p class="mt-2 text-slate-600">{r.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    <h2 class="text-2xl font-bold md:text-3xl">Quy trình 4 bước</h2>
+    <ol class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {steps.map((s, i) => (
+        <li class="rounded-2xl border border-slate-200 p-6">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand font-bold text-white">{i + 1}</span>
+          <h3 class="mt-3 font-bold">{s.title}</h3>
+          <p class="mt-1 text-slate-600">{s.text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-4 py-12">
+    <h2 class="text-2xl font-bold md:text-3xl">Bảng giá sửa máy in tham khảo</h2>
+    <div class="mt-6"><PriceTable limit={4} /></div>
+    <a href="/bang-gia/" class="mt-4 inline-block font-semibold text-brand underline">Xem bảng giá đầy đủ</a>
+  </section>
+
+  {youtubeId && (
+    <section class="mx-auto max-w-4xl px-4 py-12">
+      <h2 class="text-2xl font-bold md:text-3xl">Video tại chi nhánh</h2>
+      <div class="mt-6"><YouTube id={youtubeId} title="Video chi nhánh Tô Ký" /></div>
+    </section>
+  )}
+
+  {posts.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 py-12">
+      <h2 class="text-2xl font-bold md:text-3xl">Kinh nghiệm & ca sửa thực tế</h2>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((p) => <PostCard post={p} />)}</div>
+    </section>
+  )}
+
+  <FAQ items={homeFaq} />
+
+  <section class="bg-slate-50">
+    <div class="mx-auto max-w-6xl px-4 py-12">
+      <h2 class="text-2xl font-bold md:text-3xl">Khu vực phục vụ</h2>
+      <p class="mt-3 max-w-3xl text-slate-700">
+        Cửa hàng trên đường Tô Ký, Quận 12. Khách gần chi nhánh có thể mang máy đến trực tiếp; khu vực lân cận như {site.areaServed.slice(1, -1).join(', ')} gọi hotline để hẹn lịch.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>
